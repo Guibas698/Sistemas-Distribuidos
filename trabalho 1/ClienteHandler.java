@@ -28,7 +28,7 @@ public class ClienteHandler implements Runnable {
                 
                 System.out.println(">>> [Thread] Servidor recebeu JSON: " + jsonRequest);
 
-                JsonObject requestObj = JsonParser.parseString(jsonRequest).getAsJsonObject();
+                com.google.gson.JsonObject requestObj = JsonParser.parseString(jsonRequest).getAsJsonObject();
                 String operacao = requestObj.get("operacao").getAsString();
 
                 if (operacao.equals("listar_suplementos")) {
