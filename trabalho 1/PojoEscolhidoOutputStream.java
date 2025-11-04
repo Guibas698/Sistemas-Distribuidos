@@ -1,30 +1,5 @@
 import java.io.*;
-
-class Suplemento {
-    private String nome;
-    private String marca;
-    private double valor;
-
-    
-    public Suplemento(String nome, String marca, double valor) {
-        this.nome = nome;
-        this.marca = marca;
-        this.valor = valor;
-    }
-
-    
-    public String getNome() {
-        return nome;
-    }
-
-    public String getMarca() {
-        return marca;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-}
+import java.nio.charset.StandardCharsets;
 
 public class PojoEscolhidoOutputStream extends OutputStream {
     private Suplemento[] suplementos;
@@ -39,14 +14,15 @@ public class PojoEscolhidoOutputStream extends OutputStream {
 
     @Override
     public void write(int b) throws IOException {
-        // Não utilizado aqui, mas necessário para implementação de OutputStream.
+        // Delegar para o destino para suportar escrita por byte quando necessário
+        destino.write(b);
     }
 
     public void escreverDados() throws IOException {
         for (Suplemento suplemento : suplementos) {
             // Converte os atributos para bytes
-            byte[] nomeBytes = suplemento.getNome().getBytes();
-            byte[] marcaBytes = suplemento.getMarca().getBytes();
+            byte[] nomeBytes = suplemento.getNome().getBytes(StandardCharsets.UTF_8);
+            byte[] marcaBytes = suplemento.getMarca().getBytes(StandardCharsets.UTF_8);
             byte[] valorBytes = doubleToBytes(suplemento.getValor());
 
             // Converte os bytes de volta para String para exibição
@@ -55,11 +31,12 @@ public class PojoEscolhidoOutputStream extends OutputStream {
             System.out.println("Valor: " + suplemento.getValor());
             
             // Escreve os bytes para o OutputStream (destino)
-            destino.write(nomeBytes.length);
+            // comprimento do nome e marca são gravados em um único byte (0..255)
+            destino.write(nomeBytes.length & 0xFF);
             destino.write(nomeBytes);
-            destino.write(marcaBytes.length);
+            destino.write(marcaBytes.length & 0xFF);
             destino.write(marcaBytes);
-            destino.write(valorBytes.length);
+            // Não gravamos o comprimento do valor (double) — sempre 8 bytes — para manter o protocolo simples
             destino.write(valorBytes);
         }
     }
@@ -77,21 +54,5 @@ public class PojoEscolhidoOutputStream extends OutputStream {
             (byte) (longBits >> 8),
             (byte) longBits
         };
-    }
-}
-
-class Main {
-    public static void main(String[] args) throws IOException {
-        // Criação de objetos Suplemento
-        Suplemento[] suplementos = {
-            new Suplemento("Whey Protein", "Marca X", 120.40),
-            new Suplemento("Creatina", "Marca Y", 60.50)
-        };
-
-        // Criação do PojoEscolhidoOutputStream
-        PojoEscolhidoOutputStream outputStream = new PojoEscolhidoOutputStream(suplementos, suplementos.length, System.out);
-
-        // Escrever dados para o destino (neste caso, a saída padrão)
-        outputStream.escreverDados();
     }
 }

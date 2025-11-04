@@ -1,10 +1,24 @@
 
 public class Suplemento {
-    String nome;
-    int estoque;
+    private String nome;
+    private String marca;
+    private double valor;
 
-    public Suplemento(String nome, int estoque) {
+    public Suplemento(String nome, String marca, double valor) {
         this.nome = nome;
-        this.estoque = estoque;
+        this.marca = marca;
+        this.valor = valor;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public double getValor() {
+        return valor;
     }
 }

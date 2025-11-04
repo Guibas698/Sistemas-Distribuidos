@@ -12,8 +12,9 @@ public class ServidorQ5 {
 
     public static void main(String[] args) {
         
-        estoque.add(new Suplemento("Whey Protein", 50));
-        estoque.add(new Suplemento("Creatina", 100));
+    // Inicializa com alguns suplementos (nome, marca, valor)
+    estoque.add(new Suplemento("Whey Protein", "Marca X", 50.0));
+    estoque.add(new Suplemento("Creatina", "Marca Y", 100.0));
         
         try (ServerSocket servidorSocket = new ServerSocket(9091)) { 
             System.out.println("Servidor Q5 (JSON + Multi-Thread) iniciado na porta 9091...");
@@ -31,37 +32,5 @@ public class ServidorQ5 {
     }
 
     
-    public static class Suplemento {
-        private String nome;
-        private int quantidade;
-
-        public Suplemento(String nome, int quantidade) {
-            this.nome = nome;
-            this.quantidade = quantidade;
-        }
-
-        public String getNome() {
-            return nome;
-        }
-
-        public void setNome(String nome) {
-            this.nome = nome;
-        }
-
-        public int getQuantidade() {
-            return quantidade;
-        }
-
-        public void setQuantidade(int quantidade) {
-            this.quantidade = quantidade;
-        }
-
-        @Override
-        public String toString() {
-            return "Suplemento{" +
-                    "nome='" + nome + '\'' +
-                    ", quantidade=" + quantidade +
-                    '}';
-        }
-    }
+    // Usamos a classe Suplemento definida em Suplemento.java (nome, marca, valor)
 }
