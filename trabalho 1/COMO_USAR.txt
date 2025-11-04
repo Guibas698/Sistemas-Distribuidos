@@ -1,0 +1,6 @@
+teste txt:
+cmd /c "cd /d "C:\Users\games\OneDrive\Documentos\sistemas distruibuidos\trabalhos sd\trabalho 1" && run-test-text.bat"
+
+teste tcp:
+cmd /c "cd /d "C:\Users\games\OneDrive\Documentos\sistemas distruibuidos\trabalhos sd\trabalho 1" && run-tcp-test.bat"
+
