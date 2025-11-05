@@ -1,24 +1,28 @@
 
 public class Suplemento {
+    private int id;
     private String nome;
-    private String marca;
-    private double valor;
-
-    public Suplemento(String nome, String marca, double valor) {
+    private String categoria;
+    private int votos;
+    
+    public Suplemento(int id, String nome, String categoria) {
+        this.id = id;
         this.nome = nome;
-        this.marca = marca;
-        this.valor = valor;
+        this.categoria = categoria;
+        this.votos = 0;
     }
-
-    public String getNome() {
-        return nome;
+    
+    public int getId() { return id; }
+    public String getNome() { return nome; }
+    public String getCategoria() { return categoria; }
+    public int getVotos() { return votos; }
+    
+    public void addcionarVoto() {
+        this.votos++;
     }
-
-    public String getMarca() {
-        return marca;
-    }
-
-    public double getValor() {
-        return valor;
+    
+    @Override
+    public String toString() {
+        return id + " - " + nome + " (" + categoria + ")";
     }
 }
