@@ -1,36 +1,76 @@
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ServidorQ5 {
-
-    public static List<Suplemento> estoque = Collections.synchronizedList(new ArrayList<>());
-
+    // Listas compartilhadas
+    public static List<Suplemento> suplementos = Collections.synchronizedList(new ArrayList<>());
+    public static Map<String, Usuario> usuarios = Collections.synchronizedMap(new HashMap<>());
+    public static Map<String, Integer> votos = Collections.synchronizedMap(new HashMap<>());
+    public static boolean votacaoAtiva = true;
+    
     public static void main(String[] args) {
+        System.out.println("=== INICIANDO SERVIDOR DE VOTAÇÃO ===");
         
-    // Inicializa com alguns suplementos (nome, marca, valor)
-    estoque.add(new Suplemento("Whey Protein", "Marca X", 50.0));
-    estoque.add(new Suplemento("Creatina", "Marca Y", 100.0));
+        //INICIALIZAR DADOS
+        inicializarDados();
         
-        try (ServerSocket servidorSocket = new ServerSocket(9091)) { 
-            System.out.println("Servidor Q5 (JSON + Multi-Thread) iniciado na porta 9091...");
-
-            while (true) {
-                Socket clienteSocket = servidorSocket.accept();
-                System.out.println(">>> Novo cliente conectado: " + clienteSocket.getInetAddress().getHostAddress());
-                
-                ClienteHandler garcom = new ClienteHandler(clienteSocket);
-                new Thread(garcom).start();
+        // TEMPORIZADOR PARA ENCERRAR VOTAÇÃO (60 segundos)
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                votacaoAtiva = false;
+                System.out.println(" VOTAÇÃO ENCERRADA!");
+                mostrarResultados();
             }
+        }, 60000); // 60 segundos
+        
+        //INICIAR SERVIDOR SOCKET
+        try {
+            ServerSocket servidorSocket = new ServerSocket(9091);
+            System.out.println("Servidor iniciado na porta 9091");
+            System.out.println(" Suplementos para votação:");
+            
+            for (Suplemento sup : suplementos) {
+                System.out.println("   " + sup.toString());
+                votos.put(sup.getNome(), 0); // Inicializar contador de votos
+            }
+            
+            // Aceitar conexões do cliente
+            while (true) {
+                System.out.println(" Aguardando conexões...");
+                Socket clienteSocket = servidorSocket.accept();
+                System.out.println(" Cliente conectado: " + clienteSocket.getInetAddress().getHostAddress());
+                
+                // Criar thread para cada cliente
+                ThreadCliente handler = new ThreadCliente(clienteSocket);
+                new Thread(handler).start();
+            }
+            
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Erro no servidor: " + e.getMessage());
         }
     }
-
     
-    // Usamos a classe Suplemento definida em Suplemento.java (nome, marca, valor)
+    private static void inicializarDados() {
+        // Cadastrar usuários
+        usuarios.put("admin", new Usuario("admin", "admin123", true));
+        usuarios.put("joao", new Usuario("joao", "senha123", false));
+        usuarios.put("maria", new Usuario("maria", "senha123", false));
+        
+        // Cadastrar suplementos para votação
+        suplementos.add(new Suplemento(1, "Whey Protein", "Proteína"));
+        suplementos.add(new Suplemento(2, "Creatina", "Força"));
+        suplementos.add(new Suplemento(3, "Pré-Treino", "Energia"));
+        suplementos.add(new Suplemento(4, "BCAA", "Recuperação"));
+    }
+    
+    private static void mostrarResultados() {
+        System.out.println("\n RESULTADOS FINAIS:");
+        for (Map.Entry<String, Integer> entry : votos.entrySet()) {
+            System.out.println("   " + entry.getKey() + ": " + entry.getValue() + " votos");
+        }
+    }
 }
