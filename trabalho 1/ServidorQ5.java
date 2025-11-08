@@ -74,3 +74,54 @@ public class ServidorQ5 {
         }
     }
 }
+
+// Classe representando um usuário
+class Usuario {
+    private String username;
+    private String password;
+    private boolean admin;
+
+    public Usuario(String username, String password, boolean admin) {
+        this.username = username;
+        this.password = password;
+        this.admin = admin;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    @Override
+    public String toString() {
+        return username + (admin ? " (admin)" : "");
+    }
+}
+
+// A classe `Suplemento` agora é definida em Suplemento.java (unificada)
+
+// Handler mínimo de cliente para compilar e fechar conexões
+class ThreadCliente implements Runnable {
+    private final Socket socket;
+
+    public ThreadCliente(Socket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+        try {
+            // Implementação mínima: fechar conexão ao terminar.
+            socket.close();
+        } catch (IOException e) {
+            System.out.println("Erro na conexão com cliente: " + e.getMessage());
+        }
+    }
+}

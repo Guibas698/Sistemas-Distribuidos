@@ -24,3 +24,5 @@ public class SuplementoTcpClient {
         }
     }
 }
+
+// Usa a classe `Suplemento` unificada em Suplemento.java

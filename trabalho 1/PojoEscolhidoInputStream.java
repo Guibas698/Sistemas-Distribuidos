@@ -62,6 +62,8 @@ public class PojoEscolhidoInputStream extends InputStream {
     }
 }
 
+// Usaremos a classe `Suplemento` definida em Suplemento.java
+
 class Main {
     public static void main(String[] args) throws IOException {
         // Suplementos a serem testados
